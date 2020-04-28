@@ -1,5 +1,9 @@
 # AWS Maven Wagon
-This project is a [Maven Wagon][wagon] for [Amazon S3][s3].  In order to to publish artifacts to an S3 bucket, the user (as identified by their access key) must be listed as an owner on the bucket.
+This project is a [Maven Wagon][wagon] for [Amazon S3][s3].
+
+It is a fork of the [original] Spring Build project, adapted to support session tokens. 
+
+In order to publish artifacts to an S3 bucket, the user (as identified by their access key) must be listed as an owner on the bucket.
 
 ## Usage
 To publish Maven artifacts to S3 a build extension must be defined in a project's `pom.xml`.  The latest version of the wagon can be found on the [`aws-maven`][aws-maven] page in Maven Central.
@@ -12,9 +16,9 @@ To publish Maven artifacts to S3 a build extension must be defined in a project'
     <extensions>
       ...
       <extension>
-        <groupId>org.springframework.build</groupId>
+        <groupId>com.vortexa</groupId>
         <artifactId>aws-maven</artifactId>
-        <version>5.0.0.RELEASE</version>
+        <version>0.1.0</version>
       </extension>
       ...
     </extensions>
@@ -45,7 +49,18 @@ Once the build extension is configured distribution management repositories can 
 </project>
 ```
 
-Finally the `~/.m2/settings.xml` must be updated to include access and secret keys for the account. The access key should be used to populate the `username` element, and the secret access key should be used to populate the `password` element.
+The code looks for the following three environment variables:
+
+* `AWS_ACCESS_KEY_ID`
+* `AWS_SECRET_ACCESS_KEY`
+* `AWS_SESSION_TOKEN`
+
+If all three are found, they are used for authentication. If not, `settings.xml` comes into play.
+
+The `~/.m2/settings.xml` must be updated to include access and secret keys for the account when not
+using environment-variable based session authentication.
+
+The access key should be used to populate the `username` element, and the secret access key should be used to populate the `password` element.
 
 ```xml
 <settings>
@@ -163,6 +178,7 @@ EOF
 aws s3api put-bucket-policy --bucket $BUCKET --policy "$POLICY"
 ```
 
+[original]: https://github.com/spring-attic/aws-maven
 [aws-maven]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.springframework.build%22%20AND%20a%3A%22aws-maven%22
 [cli]: http://aws.amazon.com/documentation/cli/
 [console]: https://console.aws.amazon.com/s3

@@ -18,13 +18,13 @@ package org.springframework.build.aws.maven;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
+import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.internal.Mimetypes;
 import com.amazonaws.services.s3.model.*;
 import org.apache.maven.wagon.ResourceDoesNotExistException;
 import org.apache.maven.wagon.TransferFailedException;
-import org.apache.maven.wagon.authentication.AuthenticationException;
 import org.apache.maven.wagon.authentication.AuthenticationInfo;
 import org.apache.maven.wagon.proxy.ProxyInfoProvider;
 import org.apache.maven.wagon.repository.Repository;
@@ -73,18 +73,29 @@ public final class SimpleStorageServiceWagon extends AbstractWagon {
 
     @Override
     protected void connectToRepository(Repository repository, AuthenticationInfo authenticationInfo,
-                                       ProxyInfoProvider proxyInfoProvider) throws AuthenticationException {
-        if (this.amazonS3 == null) {
-            AuthenticationInfoAWSCredentialsProviderChain credentialsProvider =
-                    new AuthenticationInfoAWSCredentialsProviderChain(authenticationInfo);
-            ClientConfiguration clientConfiguration = S3Utils.getClientConfiguration(proxyInfoProvider);
+                                       ProxyInfoProvider proxyInfoProvider) {
+        try {
+            if (this.amazonS3 == null) {
+                AWSCredentialsProviderChain credentialsProvider = new AWSCredentialsProviderChain(
+                        new SessionCredentialsProvider(),
+                        new AuthenticationInfoAWSCredentialsProviderChain(authenticationInfo));
 
-            this.bucketName = S3Utils.getBucketName(repository);
-            this.baseDirectory = S3Utils.getBaseDirectory(repository);
+                ClientConfiguration clientConfiguration = S3Utils.getClientConfiguration(proxyInfoProvider);
 
-            this.amazonS3 = new AmazonS3Client(credentialsProvider, clientConfiguration);
-            Region region = Region.fromLocationConstraint(this.amazonS3.getBucketLocation(this.bucketName));
-            this.amazonS3.setEndpoint(region.getEndpoint());
+                this.bucketName = S3Utils.getBucketName(repository);
+                this.baseDirectory = S3Utils.getBaseDirectory(repository);
+
+                this.amazonS3 = AmazonS3ClientBuilder.standard()
+                        .withCredentials(credentialsProvider)
+                        .withClientConfiguration(clientConfiguration)
+                        .build();
+
+                Region region = Region.fromLocationConstraint(this.amazonS3.getBucketLocation(this.bucketName));
+                this.amazonS3.setEndpoint(region.getEndpoint());
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            throw ex;
         }
     }
 
