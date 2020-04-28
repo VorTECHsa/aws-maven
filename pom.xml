@@ -230,7 +230,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/VorTECHsa/aws-maven.git</connection>
 		<url>https://github.com/VorTECHsa/aws-maven</url>
-		<tag>0.1.0</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<organization>
