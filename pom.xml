@@ -6,7 +6,7 @@
 	<groupId>com.vortexa</groupId>
 	<artifactId>aws-maven</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.2</version>
+	<version>0.1.3-SNAPSHOT</version>
 	<name>Amazon Web Services S3 Maven Wagon Support</name>
 	<description>Maven wagon support for s3:// urls</description>
 
@@ -240,7 +240,7 @@
 	<scm>
 		<connection>scm:git:https://github.com/VorTECHsa/aws-maven.git</connection>
 		<url>https://github.com/VorTECHsa/aws-maven</url>
-		<tag>aws-maven-0.1.2</tag>
+		<tag>HEAD</tag>
 	</scm>
 
 	<organization>
