@@ -6,13 +6,14 @@
 	<groupId>com.vortexa</groupId>
 	<artifactId>aws-maven</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1.1-SNAPSHOT</version>
+	<version>0.1.0-SNAPSHOT</version>
 	<name>Amazon Web Services S3 Maven Wagon Support</name>
 	<description>Maven wagon support for s3:// urls</description>
 
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
+		<maven.javadoc.skip>true</maven.javadoc.skip>
 
 		<amazonaws.version>1.11.534</amazonaws.version>
 		<junit.version>4.11</junit.version>
@@ -140,24 +141,13 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
 						<goals>
 							<goal>jar</goal>
 						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<version>3.2.1</version>
-				<executions>
-					<execution>
-						<id>attach-javadoc</id>
-						<goals/>
 					</execution>
 				</executions>
 			</plugin>
@@ -247,13 +237,5 @@
 		<name>Vortexa Ltd</name>
 		<url>http://vortexa.com</url>
 	</organization>
-
-	<developers>
-		<developer>
-			<id>eadwright</id>
-			<name>Edward Wright</name>
-			<email>edward.wright@vortexa.com</email>
-		</developer>
-	</developers>
 
 </project>
