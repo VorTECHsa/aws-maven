@@ -6,7 +6,7 @@ It is a fork of the [original] Spring Build project, adapted to support session 
 In order to publish artifacts to an S3 bucket, the user (as identified by their access key) must be listed as an owner on the bucket.
 
 ## Usage
-To publish Maven artifacts to S3 a build extension must be defined in a project's `pom.xml`.  The latest version of the wagon can be found on the [`aws-maven`][aws-maven] page in Maven Central.
+To publish Maven artifacts to S3 a build extension must be defined in a project's `pom.xml`.  The latest version of the wagon can be found on the [`aws-maven`][aws-maven] page in Nexus.
 
 ```xml
 <project>
@@ -18,7 +18,7 @@ To publish Maven artifacts to S3 a build extension must be defined in a project'
       <extension>
         <groupId>com.vortexa</groupId>
         <artifactId>aws-maven</artifactId>
-        <version>0.1.0</version>
+        <version>0.1.4</version>
       </extension>
       ...
     </extensions>
@@ -179,7 +179,7 @@ aws s3api put-bucket-policy --bucket $BUCKET --policy "$POLICY"
 ```
 
 [original]: https://github.com/spring-attic/aws-maven
-[aws-maven]: http://search.maven.org/#search%7Cgav%7C1%7Cg%3A%22org.springframework.build%22%20AND%20a%3A%22aws-maven%22
+[aws-maven]: https://oss.sonatype.org/#nexus-search;quick~com.vortexa
 [cli]: http://aws.amazon.com/documentation/cli/
 [console]: https://console.aws.amazon.com/s3
 [env-var]: http://docs.aws.amazon.com/AWSJavaSDK/latest/javadoc/com/amazonaws/auth/EnvironmentVariableCredentialsProvider.html
