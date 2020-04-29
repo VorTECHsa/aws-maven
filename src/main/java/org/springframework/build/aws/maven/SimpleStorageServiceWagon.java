@@ -94,13 +94,17 @@ public final class SimpleStorageServiceWagon extends AbstractWagon {
                 } else {
                     AmazonS3 tempS3 = builder.build();
 
+                    Region region;
                     try {
-                        Region region = Region.fromLocationConstraint(tempS3.getBucketLocation(this.bucketName));
-
-                        builder.withRegion(region.getEndpoint());
+                        region = Region.fromLocationConstraint(tempS3.getBucketLocation(this.bucketName));
                     } finally {
                         tempS3.shutdown();
                     }
+
+                    builder = AmazonS3ClientBuilder.standard()
+                            .withCredentials(credentialsProvider)
+                            .withClientConfiguration(clientConfiguration)
+                            .withRegion(region.getEndpoint());
                 }
 
                 this.amazonS3 = builder.build();
