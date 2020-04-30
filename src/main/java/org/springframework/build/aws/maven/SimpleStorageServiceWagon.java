@@ -20,6 +20,7 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.ClientConfiguration;
 import com.amazonaws.auth.AWSCredentialsProviderChain;
 import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
 import com.amazonaws.services.s3.internal.Mimetypes;
 import com.amazonaws.services.s3.model.*;
@@ -85,29 +86,18 @@ public final class SimpleStorageServiceWagon extends AbstractWagon {
                 this.bucketName = S3Utils.getBucketName(repository);
                 this.baseDirectory = S3Utils.getBaseDirectory(repository);
 
-                AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard()
-                        .withCredentials(credentialsProvider)
-                        .withClientConfiguration(clientConfiguration);
-
                 if (System.getenv("AWS_DEFAULT_REGION") != null) {
-                    builder = builder.withRegion(System.getenv("AWS_DEFAULT_REGION"));
-                } else {
-                    AmazonS3 tempS3 = builder.build();
-
-                    Region region;
-                    try {
-                        region = Region.fromLocationConstraint(tempS3.getBucketLocation(this.bucketName));
-                    } finally {
-                        tempS3.shutdown();
-                    }
-
-                    builder = AmazonS3ClientBuilder.standard()
+                    AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard()
                             .withCredentials(credentialsProvider)
                             .withClientConfiguration(clientConfiguration)
-                            .withRegion(region.getEndpoint());
-                }
+                            .withRegion(System.getenv("AWS_DEFAULT_REGION"));
 
-                this.amazonS3 = builder.build();
+                    this.amazonS3 = builder.build();
+                } else {
+                    this.amazonS3 = new AmazonS3Client(credentialsProvider, clientConfiguration);
+                    Region region = Region.fromLocationConstraint(this.amazonS3.getBucketLocation(this.bucketName));
+                    this.amazonS3.setEndpoint(region.getEndpoint());
+                }
             }
         } catch (Exception ex) {
             ex.printStackTrace();
